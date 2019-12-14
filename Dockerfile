@@ -1,7 +1,7 @@
 FROM golang:1.13.4
 
-LABEL repository="https://github.com/matoous/golangci-lint-action"
-LABEL homepage="https://github.com/matoous/golangci-lint-action"
+LABEL repository="https://github.com/Mushus/golangci-lint-action"
+LABEL homepage="https://github.com/Mushus/golangci-lint-action"
 LABEL maintainer="Matouš Dzivjak <matousdzivjak@gmail.com>"
 
 LABEL com.github.actions.name="Action - GolangCI Lint"
@@ -12,7 +12,9 @@ LABEL com.github.actions.color="blue"
 ENV GOPROXY https://proxy.golang.org
 
 RUN go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
-RUN go get -v github.com/matoous/golangci-lint-action
+ADD . /source
+WORKDIR /source
+RUN go install .
 
 COPY entrypoint.sh /entrypoint.sh
 

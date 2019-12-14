@@ -10,6 +10,7 @@ import (
 
 	"github.com/golangci/golangci-lint/pkg/result"
 	"github.com/google/go-github/v28/github"
+	_ "github.com/motemen/go-loghttp/global"
 	"golang.org/x/oauth2"
 )
 
@@ -63,6 +64,7 @@ func loadConfig() error {
 	return nil
 }
 
+//test
 func createCheck() (*github.CheckRun, error) {
 	opts := github.CreateCheckRunOptions{
 		Name:    name,
