@@ -1,21 +1,17 @@
-name: 'GolangCI-Lint Action'
-description: 'Lint your Go code with GolangCI-Lint'
-author: 'Matouš Dzivjak'
+name: "GolangCI-Lint Action"
+description: "Lint your Go code with GolangCI-Lint"
+author: "Matouš Dzivjak"
 branding:
-  icon: 'code'
-  color: 'blue'
+  icon: "code"
+  color: "blue"
 inputs:
   config:
-    description: 'Path of the GolangCI-Lint config file'
+    description: "Path of the GolangCI-Lint config file"
     required: false
   basePath:
     description: Path of the Golang project root directory
     required: false
-    default: ${{ github.workspace }}
-  githubToken:
-    description: Github Token
-    required: false
-    default: ${{ secrets.GITHUB_TOKEN }}
+    default: .
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "docker"
+  image: "Dockerfile"
