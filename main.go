@@ -9,10 +9,7 @@ import (
 	"github.com/golangci/golangci-lint/pkg/result"
 )
 
-const name = "GolangCI-Lint Action"
-
 const (
-	// envGithubWorkspace = "GITHUB_WORKSPACE"
 	envBasePath = "INPUT_BASEPATH"
 )
 // Report contains the data returned by golangci lint parsed from json
@@ -32,13 +29,11 @@ func (a annotation) Output() string {
 }
 
 type config struct {
-	workspace string
 	basePath string
 }
 
 func loadConfig() config {
 	return config{
-		//workspace: os.Getenv(envGithubWorkspace),
 		basePath: os.Getenv(envBasePath),
 	}
 }
@@ -46,13 +41,13 @@ func loadConfig() config {
 func createAnotations(cfg config, issues []result.Issue) []annotation {
 	ann := make([]annotation, len(issues))
 	for i, issue := range issues {
-		pos := issue.Pos
+		pos := &issue.Pos
 		file := filepath.Join(cfg.basePath, pos.Filename)
 		ann[i] = annotation{
 			file: file,
 			line: pos.Line,
 			col:  pos.Column,
-			text: fmt.Sprintf("%s - %s", issue.FromLinter, issue.Text),
+			text: fmt.Sprintf("[%s] %s", issue.FromLinter, issue.Text),
 		}
 	}
 	return ann
@@ -76,7 +71,6 @@ func main() {
 
 	if len(report.Issues) > 0 {
 		pushFailures(cfg, report.Issues)
-		os.Exit(1)
 	}
 
 	os.Exit(0)
