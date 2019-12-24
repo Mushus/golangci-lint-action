@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"path/filepath"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/golangci/golangci-lint/pkg/result"
 )
@@ -12,8 +12,8 @@ import (
 const (
 	envBasePath = "INPUT_BASEPATH"
 )
-// Report contains the data returned by golangci lint parsed from json
-type Report struct {
+
+type report struct {
 	Issues []result.Issue `json:"Issues"`
 }
 
@@ -40,20 +40,20 @@ func loadConfig() config {
 
 func createAnotations(cfg config, issues []result.Issue) []annotation {
 	ann := make([]annotation, len(issues))
-	for i, issue := range issues {
-		pos := &issue.Pos
+	for i := range issues {
+		pos := issues[i].Pos
 		file := filepath.Join(cfg.basePath, pos.Filename)
 		ann[i] = annotation{
 			file: file,
 			line: pos.Line,
 			col:  pos.Column,
-			text: fmt.Sprintf("[%s] %s", issue.FromLinter, issue.Text),
+			text: fmt.Sprintf("[%s] %s", issues[i].FromLinter, issues[i].Text),
 		}
 	}
 	return ann
 }
 
-func pushFailures(cfg config, failures []result.Issue) {
+func reportFailures(cfg config, failures []result.Issue) {
 	anns := createAnotations(cfg, failures)
 	for _, ann := range anns {
 		fmt.Println(ann.Output())
@@ -63,14 +63,14 @@ func pushFailures(cfg config, failures []result.Issue) {
 func main() {
 	cfg := loadConfig()
 
-	var report Report
+	var r report
 	dec := json.NewDecoder(os.Stdin)
-	if err := dec.Decode(&report); err != nil {
+	if err := dec.Decode(&r); err != nil {
 		panic(err)
 	}
 
-	if len(report.Issues) > 0 {
-		pushFailures(cfg, report.Issues)
+	if len(r.Issues) > 0 {
+		reportFailures(cfg, r.Issues)
 	}
 
 	os.Exit(0)
